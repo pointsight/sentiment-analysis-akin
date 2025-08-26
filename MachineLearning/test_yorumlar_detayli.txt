@@ -1,0 +1,62 @@
+# 🧪 DETAYLI TEST YORUMLARI
+# Bu dosya sentiment analiz sisteminin farklı senaryolarını test etmek için hazırlanmıştır
+
+# ===== TEST 1: NÖTR YORUM (İş Yeri Talebi) =====
+Personel dinlenme alanlarındaki kahve makinesinden lojmanada talep ediyoruz. Sayın yönetim kuruluna Otel olsun lojman olsun herşey çok iyi sorunsuz fakat biz arkadaşlarımızla bulunmak istiyoruz lojmanda mescit yok bir lojmanda mescitin açılmasını istiyoruz sizden ricamız teşekkür ederiz hayırlı akşamlar dilerim
+
+# ===== TEST 2: OLUMLU YORUM =====
+Bu ürün gerçekten harika! Çok memnun kaldım, kalitesi mükemmel ve fiyatına göre çok uygun. Kesinlikle tavsiye ederim.
+
+# ===== TEST 3: OLUMSUZ YORUM =====
+Bu ürün gerçekten berbat! Hiç memnun kalmadım, kalitesi çok düşük ve fiyatına hiç değmez. Kargo da çok geç geldi, çok kızgınım.
+
+# ===== TEST 4: KARMAŞIK NÖTR YORUM =====
+Lojmanda yemekhane kalitesi iyi ama çeşit az. Spor salonu eklenmesini istiyoruz. İnternet hızı yeterli fakat otopark yetersiz. Genel olarak memnunuz ama iyileştirmeler yapılmasını talep ediyoruz.
+
+# ===== TEST 5: BASİT OLUMLU =====
+Bu ürün harika! Çok memnun kaldım.
+
+# ===== TEST 6: BASİT OLUMSUZ =====
+Hiç memnun kalmadım, çok kötü.
+
+# ===== TEST 7: İŞ YERİ TALEBİ =====
+Personel yemekhanesinde daha fazla çeşit yemek olmasını istiyoruz.
+
+# ===== TEST 8: İŞ YERİ TALEBİ =====
+Lojmanda internet hızının artırılmasını talep ediyoruz.
+
+# ===== TEST 9: BASİT OLUMSUZ =====
+Bu ürün berbat, hiç beğenmedim.
+
+# ===== TEST 10: İŞ YERİ TALEBİ =====
+Lojmanda spor salonu eklenmesini istiyoruz.
+
+# ===== TEST 11: BASİT OLUMLU =====
+Müşteri hizmetleri çok iyi, teşekkür ederiz.
+
+# ===== TEST 12: İŞ YERİ TALEBİ =====
+Çalışma saatlerinin düzenlenmesini talep ediyoruz.
+
+# ===== TEST 13: KARMAŞIK =====
+Bu ürün kaliteli ama pahalı.
+
+# ===== TEST 14: İŞ YERİ TALEBİ =====
+Dinlenme alanında daha fazla oturma yeri olmasını istiyoruz.
+
+# ===== TEST 15: ELEŞTİREL AMA NÖTR =====
+Personel yemekhanesinde daha fazla çeşit yemek olmasını istiyoruz. Mevcut yemekler lezzetli ama çeşit az.
+
+# ===== TEST 16: POZİTİF + TALEP =====
+Lojmanda herşey çok güzel, teşekkür ederiz. Sadece spor salonu eklenmesini istiyoruz.
+
+# ===== TEST 17: NEGATİF + TALEP =====
+Lojmanda internet çok yavaş, bu konuda iyileştirme yapılmasını talep ediyoruz.
+
+# ===== TEST 18: KARMAŞIK DUYGU =====
+Ürün kalitesi iyi ama fiyatı yüksek. Yine de memnunuz ama indirim yapılmasını istiyoruz.
+
+# ===== TEST 19: ÇOK UZUN NÖTR =====
+Sayın yönetim kuruluna, lojmanda bulunduğumuz süre boyunca genel olarak memnun olduğumuzu belirtmek isteriz. Ancak bazı iyileştirmeler yapılmasını talep ediyoruz. Öncelikle personel yemekhanesinde daha fazla çeşit yemek olmasını istiyoruz. Ayrıca dinlenme alanında daha fazla oturma yeri olmasını talep ediyoruz. Spor salonu eklenmesini de istiyoruz. İnternet hızının artırılmasını talep ediyoruz. Genel olarak memnunuz fakat bu iyileştirmeler yapılırsa daha da memnun olacağımızdan eminiz. Teşekkür ederiz.
+
+# ===== TEST 20: ÇOK KISA =====
+Harika!

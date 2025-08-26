@@ -1,0 +1,62 @@
+# 🎭 TÜRKÇE DUYGU ANALİZİ - ÖRNEK YORUMLAR
+# Bu dosya farklı türde yorumları test etmek için hazırlanmıştır
+
+# ===== OLUMLU YORUMLAR =====
+Bu ürün gerçekten harika! Çok memnun kaldım.
+Müşteri hizmetleri çok iyi, teşekkür ederiz.
+Kalitesi mükemmel ve fiyatına göre çok uygun.
+Kesinlikle tavsiye ederim, süper ürün.
+Çok başarılı bir deneyimdi, memnun kaldım.
+Profesyonel hizmet, kaliteli ürün.
+Hızlı kargo, güvenilir satıcı.
+Ürün tam istediğimiz gibi çıktı.
+Çok güzel tasarım, beğendim.
+Başarılı bir alışveriş deneyimi.
+
+# ===== OLUMSUZ YORUMLAR =====
+Bu ürün gerçekten berbat! Hiç memnun kalmadım.
+Kargo çok geç geldi, çok kızgınım.
+Kalitesi çok düşük ve fiyatına hiç değmez.
+Hiç beğenmedim, rezalet bir ürün.
+Çok kötü deneyim, tekrar almam.
+Müşteri hizmetleri yetersiz.
+Ürün bozuk geldi, çok sinirliyim.
+Kötü kalite, düşük performans.
+Çok pahalı ama değersiz.
+Berbat bir hizmet, memnun değilim.
+
+# ===== NÖTR YORUMLAR (İş Yeri Talepleri) =====
+Personel dinlenme alanlarındaki kahve makinesinden lojmanada talep ediyoruz.
+Lojmanda internet hızının artırılmasını talep ediyoruz.
+Personel yemekhanesinde daha fazla çeşit yemek olmasını istiyoruz.
+Lojmanda spor salonu eklenmesini istiyoruz.
+Çalışma saatlerinin düzenlenmesini talep ediyoruz.
+Dinlenme alanında daha fazla oturma yeri olmasını istiyoruz.
+Lojmanda mescit açılmasını istiyoruz.
+Personel otoparkının genişletilmesini talep ediyoruz.
+Çalışma ortamının iyileştirilmesini istiyoruz.
+Sosyal alanların artırılmasını talep ediyoruz.
+
+# ===== KARMAŞIK NÖTR YORUMLAR =====
+Lojmanda yemekhane kalitesi iyi ama çeşit az. Spor salonu eklenmesini istiyoruz.
+İnternet hızı yeterli fakat otopark yetersiz. Genel olarak memnunuz ama iyileştirmeler yapılmasını talep ediyoruz.
+Otel olsun lojman olsun herşey çok iyi sorunsuz fakat biz arkadaşlarımızla bulunmak istiyoruz.
+Müşteri hizmetleri hızlı ve yardımcıydı ama fiyatlar biraz yüksek.
+Ürün kalitesi beklediğimden daha iyi çıktı fakat kullanım kılavuzu eksik.
+Ne iyi ne kötü, idare eder ama geliştirilebilir.
+Fiyatına göre performansı fena değil ama daha iyi olabilir.
+Çok pahalı ama değer, yine de indirim yapılmasını istiyoruz.
+Tavsiye ederim, güzel ürün ama daha fazla renk seçeneği olmasını istiyoruz.
+Genel olarak memnunuz fakat bazı iyileştirmeler yapılmasını talep ediyoruz.
+
+# ===== İŞ YERİ ÖNERİLERİ =====
+Personel eğitim programlarının artırılmasını istiyoruz.
+Çalışma koşullarının iyileştirilmesini talep ediyoruz.
+Yönetim ile iletişimin güçlendirilmesini istiyoruz.
+Personel motivasyon programlarının eklenmesini talep ediyoruz.
+Çalışma ortamının daha konforlu hale getirilmesini istiyoruz.
+Personel sağlık hizmetlerinin genişletilmesini talep ediyoruz.
+Çalışma saatlerinin esnek hale getirilmesini istiyoruz.
+Personel sosyal aktivitelerinin artırılmasını talep ediyoruz.
+Çalışma güvenliğinin artırılmasını istiyoruz.
+Personel gelişim fırsatlarının çoğaltılmasını talep ediyoruz.
