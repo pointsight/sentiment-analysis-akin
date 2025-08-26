@@ -284,6 +284,75 @@ def parse_txt_file(file_content: bytes) -> List[str]:
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"TXT okuma hatası: {str(e)}")
 
+# Veritabanı için basit JSON dosya sistemi
+import json
+import os
+from datetime import datetime
+
+# Veritabanı dosyası
+DB_FILE = "sentiment_database.json"
+
+def load_database():
+    """Veritabanını yükle"""
+    if os.path.exists(DB_FILE):
+        try:
+            with open(DB_FILE, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except:
+            pass
+    return {
+        "comments": [],
+        "statistics": {
+            "total": 0,
+            "positive": 0,
+            "negative": 0,
+            "neutral": 0,
+            "invalid": 0
+        },
+        "last_updated": datetime.now().isoformat()
+    }
+
+def save_database(db):
+    """Veritabanını kaydet"""
+    db["last_updated"] = datetime.now().isoformat()
+    with open(DB_FILE, 'w', encoding='utf-8') as f:
+        json.dump(db, f, ensure_ascii=False, indent=2)
+
+def add_comment_to_database(comment_data):
+    """Yorumu veritabanına ekle"""
+    db = load_database()
+    
+    # Yorum ID'si oluştur
+    comment_id = len(db["comments"]) + 1
+    
+    # Yorum verisi
+    comment_entry = {
+        "id": comment_id,
+        "text": comment_data["yorum"],
+        "sentiment": comment_data["analiz"],
+        "confidence": comment_data["güven"],
+        "method": comment_data.get("yöntem", "bilinmiyor"),
+        "timestamp": datetime.now().isoformat(),
+        "model_results": comment_data.get("model_sonuçları", None)
+    }
+    
+    db["comments"].append(comment_entry)
+    
+    # İstatistikleri güncelle
+    db["statistics"]["total"] += 1
+    sentiment = comment_data["analiz"]
+    if sentiment == "Olumlu":
+        db["statistics"]["positive"] += 1
+    elif sentiment == "Olumsuz":
+        db["statistics"]["negative"] += 1
+    elif sentiment == "Nötr":
+        db["statistics"]["neutral"] += 1
+    else:
+        db["statistics"]["invalid"] += 1
+    
+    save_database(db)
+    return comment_id
+
 @app.get("/", response_class=HTMLResponse)
 async def read_root():
     """Ana sayfa - HTML arayüzünü serve et"""
@@ -368,8 +437,87 @@ async def read_root():
 
 @app.post("/analyze")
 async def analyze_single(comment: Comment):
-    """Tek yorum analizi"""
-    return analyze_comment(comment.text)
+    """Tek yorum analizi - gelişmiş hibrit yaklaşım"""
+    if not comment or len(comment.strip()) < 2:
+        raise HTTPException(status_code=400, detail="Yorum çok kısa veya boş")
+    
+    # 1. Önce kural tabanlı kontrol
+    if is_neutral_comment(comment.text):
+        result = {
+            "yorum": comment.text,
+            "analiz": "Nötr",
+            "güven": 0.95,
+            "yöntem": "kural_tabanlı",
+            "açıklama": "Talep, öneri veya rica içeren yorum",
+            "model_sonuçları": None
+        }
+    else:
+        cleaned = clean_text(comment.text)
+        if len(cleaned.split()) < 2:
+            result = {
+                "yorum": comment.text,
+                "analiz": "Geçersiz / Yetersiz Yorum",
+                "güven": 0.0,
+                "yöntem": "kural_tabanlı",
+                "model_sonuçları": None
+            }
+        else:
+            try:
+                # 2. Çoklu model analizi
+                model_results = []
+                for model_id in pipelines.keys():
+                    result_model = analyze_with_model(cleaned, model_id)
+                    if "error" not in result_model:
+                        model_results.append(result_model)
+                
+                # 3. Model sonuçlarını birleştir
+                combined_result = combine_model_results(model_results)
+                
+                if "error" in combined_result:
+                    raise Exception(combined_result["error"])
+                
+                final_sentiment = combined_result["final_sentiment"]
+                final_confidence = combined_result["final_confidence"]
+                
+                # 4. Model sonucunu kontrol et - eğer çok yüksek güvenle yanlış sınıflandırıyorsa
+                if final_confidence > 0.9 and final_sentiment == "Olumsuz":
+                    if is_neutral_comment(comment.text):
+                        result = {
+                            "yorum": comment.text,
+                            "analiz": "Nötr",
+                            "güven": 0.90,
+                            "yöntem": "hibrit_düzeltme",
+                            "açıklama": "Model yanlış sınıflandırdı, kural tabanlı düzeltme uygulandı",
+                            "model_sonuçları": combined_result
+                        }
+                    else:
+                        result = {
+                            "yorum": comment.text,
+                            "analiz": final_sentiment,
+                            "güven": round(final_confidence, 3),
+                            "yöntem": combined_result["method"],
+                            "model_sonuçları": combined_result
+                        }
+                else:
+                    result = {
+                        "yorum": comment.text,
+                        "analiz": final_sentiment,
+                        "güven": round(final_confidence, 3),
+                        "yöntem": combined_result["method"],
+                        "model_sonuçları": combined_result
+                    }
+            except Exception as e:
+                raise HTTPException(status_code=500, detail=f"Analiz hatası: {str(e)}")
+    
+    # Yorumu veritabanına ekle
+    try:
+        comment_id = add_comment_to_database(result)
+        result["comment_id"] = comment_id
+    except Exception as e:
+        print(f"Veritabanı hatası: {e}")
+        result["comment_id"] = None
+    
+    return result
 
 @app.post("/analyze-batch")
 async def analyze_batch(payload: Comments):
@@ -417,6 +565,176 @@ async def health_check():
         "models": {model_id: {"name": info["name"], "status": "loaded"} for model_id, info in MODELS.items()},
         "pipelines": list(pipelines.keys())
     }
+
+@app.get("/statistics")
+async def get_statistics():
+    """Güncel istatistikleri getir"""
+    try:
+        db = load_database()
+        return {
+            "status": "success",
+            "data": db["statistics"],
+            "last_updated": db["last_updated"],
+            "total_comments": len(db["comments"])
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"İstatistik hatası: {str(e)}")
+
+@app.get("/comments")
+async def get_comments(limit: int = 50, offset: int = 0):
+    """Yorumları getir"""
+    try:
+        db = load_database()
+        comments = db["comments"][offset:offset+limit]
+        return {
+            "status": "success",
+            "data": comments,
+            "total": len(db["comments"]),
+            "limit": limit,
+            "offset": offset
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Yorum getirme hatası: {str(e)}")
+
+@app.get("/comments/{comment_id}")
+async def get_comment(comment_id: int):
+    """Belirli bir yorumu getir"""
+    try:
+        db = load_database()
+        if comment_id <= 0 or comment_id > len(db["comments"]):
+            raise HTTPException(status_code=404, detail="Yorum bulunamadı")
+        
+        comment = db["comments"][comment_id - 1]
+        return {
+            "status": "success",
+            "data": comment
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Yorum getirme hatası: {str(e)}")
+
+@app.delete("/comments/{comment_id}")
+async def delete_comment(comment_id: int):
+    """Yorumu sil"""
+    try:
+        db = load_database()
+        if comment_id <= 0 or comment_id > len(db["comments"]):
+            raise HTTPException(status_code=404, detail="Yorum bulunamadı")
+        
+        # Yorumu sil
+        deleted_comment = db["comments"].pop(comment_id - 1)
+        
+        # İstatistikleri güncelle
+        sentiment = deleted_comment["sentiment"]
+        db["statistics"]["total"] -= 1
+        if sentiment == "Olumlu":
+            db["statistics"]["positive"] -= 1
+        elif sentiment == "Olumsuz":
+            db["statistics"]["negative"] -= 1
+        elif sentiment == "Nötr":
+            db["statistics"]["neutral"] -= 1
+        else:
+            db["statistics"]["invalid"] -= 1
+        
+        # ID'leri yeniden düzenle
+        for i, comment in enumerate(db["comments"]):
+            comment["id"] = i + 1
+        
+        save_database(db)
+        
+        return {
+            "status": "success",
+            "message": "Yorum başarıyla silindi",
+            "deleted_comment": deleted_comment
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Yorum silme hatası: {str(e)}")
+
+@app.post("/analyze-bulk")
+async def analyze_bulk_comments(comments: List[str]):
+    """Toplu yorum analizi"""
+    if not comments or len(comments) == 0:
+        raise HTTPException(status_code=400, detail="Yorum listesi boş")
+    
+    if len(comments) > 100:
+        raise HTTPException(status_code=400, detail="Maksimum 100 yorum analiz edilebilir")
+    
+    results = []
+    start_time = time.time()
+    
+    for comment_text in comments:
+        try:
+            # Her yorumu analiz et
+            comment_obj = Comment(text=comment_text)
+            result = await analyze_single(comment_obj)
+            results.append(result)
+        except Exception as e:
+            results.append({
+                "yorum": comment_text,
+                "analiz": "Hata",
+                "güven": 0.0,
+                "yöntem": "hata",
+                "açıklama": str(e),
+                "comment_id": None
+            })
+    
+    end_time = time.time()
+    processing_time = end_time - start_time
+    
+    return {
+        "status": "success",
+        "message": f"{len(comments)} yorum analiz edildi",
+        "results": results,
+        "processing_time": round(processing_time, 2),
+        "average_time_per_comment": round(processing_time / len(comments), 3)
+    }
+
+@app.get("/export")
+async def export_data(format: str = "json"):
+    """Veriyi dışa aktar"""
+    try:
+        db = load_database()
+        
+        if format.lower() == "csv":
+            import csv
+            from io import StringIO
+            
+            output = StringIO()
+            writer = csv.writer(output)
+            
+            # CSV başlıkları
+            writer.writerow(["ID", "Yorum", "Sentiment", "Güven", "Yöntem", "Tarih"])
+            
+            # Verileri yaz
+            for comment in db["comments"]:
+                writer.writerow([
+                    comment["id"],
+                    comment["text"],
+                    comment["sentiment"],
+                    comment["confidence"],
+                    comment["method"],
+                    comment["timestamp"]
+                ])
+            
+            output.seek(0)
+            return Response(
+                content=output.getvalue(),
+                media_type="text/csv",
+                headers={"Content-Disposition": f"attachment; filename=sentiment_data_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"}
+            )
+        
+        else:  # JSON format
+            return {
+                "status": "success",
+                "data": db,
+                "export_time": datetime.now().isoformat()
+            }
+            
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Dışa aktarma hatası: {str(e)}")
 
 if __name__ == "__main__":
     import uvicorn

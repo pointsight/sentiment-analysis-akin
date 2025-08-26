@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Türkçe Duygu Analizi</title>
+    <title>Türkçe Duygu Analizi Sistemi</title>
     <style>
         * {
             margin: 0;
@@ -22,13 +22,13 @@
             max-width: 1200px;
             margin: 0 auto;
             background: white;
-            border-radius: 15px;
+            border-radius: 20px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.1);
             overflow: hidden;
         }
 
         .header {
-            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             padding: 30px;
             text-align: center;
@@ -37,103 +37,97 @@
         .header h1 {
             font-size: 2.5em;
             margin-bottom: 10px;
-            font-weight: 300;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
 
         .header p {
-            font-size: 1.1em;
+            font-size: 1.2em;
             opacity: 0.9;
         }
 
-        .content {
-            padding: 40px;
+        .main-content {
+            padding: 30px;
         }
 
         .section {
             margin-bottom: 40px;
-            padding: 30px;
-            border: 1px solid #e1e8ed;
-            border-radius: 10px;
-            background: #fafbfc;
+            padding: 25px;
+            border-radius: 15px;
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
         }
 
         .section h2 {
-            color: #2c3e50;
+            color: #333;
             margin-bottom: 20px;
-            font-size: 1.8em;
-            border-bottom: 2px solid #3498db;
-            padding-bottom: 10px;
+            font-size: 1.5em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        .form-group {
+        .input-group {
             margin-bottom: 20px;
         }
 
-        label {
+        .input-group label {
             display: block;
             margin-bottom: 8px;
             font-weight: 600;
-            color: #34495e;
+            color: #555;
         }
 
-        textarea, input[type="file"] {
+        .input-group textarea, .input-group input[type="file"] {
             width: 100%;
             padding: 15px;
-            border: 2px solid #e1e8ed;
-            border-radius: 8px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
             font-size: 16px;
             transition: border-color 0.3s ease;
         }
 
-        textarea:focus, input[type="file"]:focus {
+        .input-group textarea:focus, .input-group input[type="file"]:focus {
             outline: none;
-            border-color: #3498db;
-        }
-
-        textarea {
-            min-height: 120px;
-            resize: vertical;
-            font-family: inherit;
+            border-color: #667eea;
         }
 
         .btn {
-            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
             padding: 15px 30px;
-            border-radius: 8px;
+            border-radius: 10px;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
 
         .btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
-        }
-
-        .btn:active {
-            transform: translateY(0);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
         }
 
         .btn:disabled {
-            background: #bdc3c7;
+            opacity: 0.6;
             cursor: not-allowed;
             transform: none;
-            box-shadow: none;
         }
 
         .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #3498db;
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
             border-radius: 50%;
+            width: 40px;
+            height: 40px;
             animation: spin 1s linear infinite;
-            margin-right: 10px;
+            margin: 0 auto 10px;
         }
 
         @keyframes spin {
@@ -142,7 +136,7 @@
         }
 
         .results {
-            margin-top: 30px;
+            margin-top: 20px;
         }
 
         .result-item {
@@ -150,97 +144,84 @@
             margin-bottom: 15px;
             border-radius: 10px;
             border-left: 5px solid;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            transition: transform 0.2s ease;
+            background: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
 
-        .result-item:hover {
-            transform: translateX(5px);
-        }
-
-        .result-item.olumlu {
-            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+        .result-item.positive {
             border-left-color: #28a745;
-            color: #155724;
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
         }
 
-        .result-item.olumsuz {
-            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+        .result-item.negative {
             border-left-color: #dc3545;
-            color: #721c24;
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
         }
 
-        .result-item.notr {
-            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+        .result-item.neutral {
             border-left-color: #ffc107;
-            color: #856404;
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
         }
 
-        .result-item.gecersiz {
-            background: linear-gradient(135deg, #e2e3e5 0%, #d6d8db 100%);
+        .result-item.invalid {
             border-left-color: #6c757d;
-            color: #495057;
+            background: linear-gradient(135deg, #e2e3e5 0%, #d6d8db 100%);
         }
 
-        .comment-text {
+        .result-text {
             font-size: 16px;
             margin-bottom: 10px;
             line-height: 1.5;
         }
 
-        .analysis-info {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .sentiment {
+        .result-analysis {
             font-weight: 600;
             font-size: 18px;
-            padding: 8px 16px;
-            border-radius: 20px;
-            background: rgba(255,255,255,0.3);
+            margin-bottom: 5px;
         }
 
-        .confidence {
+        .result-confidence {
             font-size: 14px;
             opacity: 0.8;
         }
 
-        .file-info {
-            background: #e8f4fd;
-            border: 1px solid #bee5eb;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 20px;
-        }
-
-        .file-info h4 {
-            color: #0c5460;
-            margin-bottom: 10px;
+        .result-method {
+            font-size: 12px;
+            margin-top: 10px;
+            padding: 5px 10px;
+            background: rgba(0,0,0,0.1);
+            border-radius: 15px;
+            display: inline-block;
         }
 
         .error {
             background: #f8d7da;
-            border: 1px solid #f5c6cb;
             color: #721c24;
             padding: 15px;
-            border-radius: 8px;
+            border-radius: 10px;
+            border: 1px solid #f5c6cb;
             margin-top: 20px;
         }
 
         .success {
             background: #d4edda;
-            border: 1px solid #c3e6cb;
             color: #155724;
             padding: 15px;
-            border-radius: 8px;
+            border-radius: 10px;
+            border: 1px solid #c3e6cb;
             margin-top: 20px;
         }
 
-        .stats {
+        /* İstatistik Paneli Stilleri */
+        .stats-panel {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 20px;
@@ -248,35 +229,102 @@
         }
 
         .stat-card {
-            background: white;
+            background: rgba(255,255,255,0.1);
             padding: 20px;
             border-radius: 10px;
             text-align: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
         }
 
         .stat-number {
-            font-size: 2em;
+            font-size: 2.5em;
             font-weight: bold;
-            color: #3498db;
+            margin-bottom: 5px;
         }
 
         .stat-label {
-            color: #7f8c8d;
-            margin-top: 5px;
+            font-size: 14px;
+            opacity: 0.9;
         }
 
+        .stats-chart {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .chart-bar {
+            background: rgba(255,255,255,0.3);
+            height: 30px;
+            border-radius: 15px;
+            margin: 10px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chart-fill {
+            height: 100%;
+            background: rgba(255,255,255,0.8);
+            border-radius: 15px;
+            transition: width 0.5s ease;
+        }
+
+        .chart-label {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-weight: 600;
+            color: white;
+        }
+
+        .chart-percentage {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-weight: 600;
+            color: white;
+        }
+
+        .refresh-btn {
+            background: rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .refresh-btn:hover {
+            background: rgba(255,255,255,0.3);
+            border-color: rgba(255,255,255,0.5);
+        }
+
+        /* Responsive Tasarım */
         @media (max-width: 768px) {
-            .content {
+            .container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+
+            .header {
                 padding: 20px;
             }
-            
-            .section {
-                padding: 20px;
-            }
-            
+
             .header h1 {
                 font-size: 2em;
+            }
+
+            .main-content {
+                padding: 20px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -284,153 +332,202 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🎭 Türkçe Duygu Analizi</h1>
-            <p>Yorumlarınızı analiz edin ve duygusal tonlarını keşfedin</p>
+            <h1>🎭 Türkçe Duygu Analizi Sistemi</h1>
+            <p>Yapay Zeka Destekli Türkçe Yorum Analizi</p>
         </div>
 
-        <div class="content">
-            <!-- Tek Yorum Analizi -->
-            <div class="section">
-                <h2>📝 Tek Yorum Analizi</h2>
-                <div class="form-group">
-                    <label for="singleComment">Yorumunuzu yazın:</label>
-                    <textarea id="singleComment" placeholder="Örnek: Bu ürün gerçekten harika! Çok memnun kaldım."></textarea>
+        <div class="main-content">
+            <!-- İstatistik Paneli -->
+            <div class="stats-panel">
+                <h2>📊 Canlı İstatistikler</h2>
+                <button class="refresh-btn" onclick="refreshStats()">🔄 İstatistikleri Yenile</button>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalComments">0</div>
+                        <div class="stat-label">Toplam Yorum</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="positiveCount">0</div>
+                        <div class="stat-label">Olumlu</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="negativeCount">0</div>
+                        <div class="stat-label">Olumsuz</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="neutralCount">0</div>
+                        <div class="stat-label">Nötr</div>
+                    </div>
                 </div>
-                <button class="btn" onclick="analyzeSingle()" id="singleBtn">
-                    <span class="loading" id="singleLoading" style="display: none;"></span>
-                    Analiz Et
-                </button>
-                <div id="singleResult" class="results"></div>
+
+                <div class="stats-chart">
+                    <h3>Sentiment Dağılımı</h3>
+                    <div class="chart-bar">
+                        <div class="chart-fill" id="positiveBar" style="width: 0%"></div>
+                        <div class="chart-label">Olumlu</div>
+                        <div class="chart-percentage" id="positivePercentage">0%</div>
+                    </div>
+                    <div class="chart-bar">
+                        <div class="chart-fill" id="negativeBar" style="width: 0%"></div>
+                        <div class="chart-label">Olumsuz</div>
+                        <div class="chart-percentage" id="negativePercentage">0%</div>
+                    </div>
+                    <div class="chart-bar">
+                        <div class="chart-fill" id="neutralBar" style="width: 0%"></div>
+                        <div class="chart-label">Nötr</div>
+                        <div class="chart-percentage" id="neutralPercentage">0%</div>
+                    </div>
+                </div>
             </div>
 
-            <!-- Dosya Yükleme -->
+            <!-- Tek Yorum Analizi -->
             <div class="section">
-                <h2>📁 Toplu Yorum Analizi</h2>
-                <div class="form-group">
-                    <label for="fileUpload">CSV veya TXT dosyası seçin:</label>
-                    <input type="file" id="fileUpload" accept=".csv,.txt">
-                    <small style="color: #7f8c8d; margin-top: 5px; display: block;">
-                        • CSV: Her satırda bir yorum olacak şekilde<br>
-                        • TXT: Her satırda bir yorum olacak şekilde<br>
-                        • Maksimum dosya boyutu: 5MB
-                    </small>
+                <h2>💬 Tek Yorum Analizi</h2>
+                <div class="input-group">
+                    <label for="commentText">Yorumunuzu yazın:</label>
+                    <textarea id="commentText" rows="4" placeholder="Analiz etmek istediğiniz Türkçe yorumu buraya yazın..."></textarea>
                 </div>
-                <button class="btn" onclick="analyzeFile()" id="fileBtn">
-                    <span class="loading" id="fileLoading" style="display: none;"></span>
-                    Yükle ve Analiz Et
-                </button>
-                <div id="fileResult" class="results"></div>
+                <button class="btn" onclick="analyzeSingle()">🔍 Analiz Et</button>
+                
+                <div class="loading" id="singleLoading">
+                    <div class="spinner"></div>
+                    <p>Yorum analiz ediliyor...</p>
+                </div>
+                
+                <div id="singleResults" class="results"></div>
+            </div>
+
+            <!-- Dosya Yükleme ve Analiz -->
+            <div class="section">
+                <h2>📁 Dosya Yükleme ve Toplu Analiz</h2>
+                <div class="input-group">
+                    <label for="fileInput">TXT veya CSV dosyası seçin:</label>
+                    <input type="file" id="fileInput" accept=".txt,.csv">
+                </div>
+                <button class="btn" onclick="analyzeFile()">📤 Yükle ve Analiz Et</button>
+                
+                <div class="loading" id="fileLoading">
+                    <div class="spinner"></div>
+                    <p>Dosya analiz ediliyor...</p>
+                </div>
+                
+                <div id="fileResults" class="results"></div>
+            </div>
+
+            <!-- Gerçek Zamanlı Analiz -->
+            <div class="section">
+                <h2>⚡ Gerçek Zamanlı Analiz</h2>
+                <div class="input-group">
+                    <label for="realtimeComment">Gerçek zamanlı analiz için yorum yazın:</label>
+                    <textarea id="realtimeComment" rows="3" placeholder="Yazmaya başlayın, otomatik analiz yapılacak..."></textarea>
+                </div>
+                <div id="realtimeResults" class="results"></div>
             </div>
         </div>
     </div>
 
     <script>
-        const API_BASE = window.location.origin;
+        let statsData = {
+            total: 0,
+            positive: 0,
+            negative: 0,
+            neutral: 0,
+            invalid: 0
+        };
 
-        function showLoading(buttonId, loadingId) {
-            document.getElementById(buttonId).disabled = true;
-            document.getElementById(loadingId).style.display = 'inline-block';
-        }
+        // Sayfa yüklendiğinde istatistikleri getir
+        document.addEventListener('DOMContentLoaded', function() {
+            refreshStats();
+            setupRealtimeAnalysis();
+        });
 
-        function hideLoading(buttonId, loadingId) {
-            document.getElementById(buttonId).disabled = false;
-            document.getElementById(loadingId).style.display = 'none';
-        }
-
-        function showError(containerId, message) {
-            const container = document.getElementById(containerId);
-            container.innerHTML = `<div class="error">❌ ${message}</div>`;
-        }
-
-        function showSuccess(containerId, message) {
-            const container = document.getElementById(containerId);
-            container.innerHTML = `<div class="success">✅ ${message}</div>`;
-        }
-
-        function getSentimentClass(sentiment) {
-            switch(sentiment.toLowerCase()) {
-                case 'olumlu': return 'olumlu';
-                case 'olumsuz': return 'olumsuz';
-                case 'nötr': return 'notr';
-                default: return 'gecersiz';
+        // İstatistikleri yenile
+        async function refreshStats() {
+            try {
+                const response = await fetch('/health');
+                if (response.ok) {
+                    const healthData = await response.json();
+                    console.log('Sistem sağlığı:', healthData);
+                }
+                
+                // Test dosyalarından istatistikleri al
+                await updateStatsFromFiles();
+            } catch (error) {
+                console.error('İstatistik güncellenirken hata:', error);
             }
         }
 
-        function renderSingleResult(result) {
-            const container = document.getElementById('singleResult');
-            const sentimentClass = getSentimentClass(result.analiz);
-            
-            container.innerHTML = `
-                <div class="result-item ${sentimentClass}">
-                    <div class="comment-text">"${result.yorum}"</div>
-                    <div class="analysis-info">
-                        <span class="sentiment">${result.analiz}</span>
-                        <span class="confidence">Güven: ${(result.güven * 100).toFixed(1)}%</span>
-                    </div>
-                </div>
-            `;
+        // Dosyalardan istatistikleri güncelle
+        async function updateStatsFromFiles() {
+            try {
+                // Örnek yorumlar dosyasından istatistik al
+                const formData = new FormData();
+                const file = new File([''], 'ornek_yorumlar.txt', { type: 'text/plain' });
+                formData.append('file', file);
+                
+                const response = await fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    updateStatsDisplay(data);
+                }
+            } catch (error) {
+                console.error('Dosya istatistikleri alınırken hata:', error);
+            }
         }
 
-        function renderFileResults(data) {
-            const container = document.getElementById('fileResult');
-            
-            // Dosya bilgisi
-            let html = `
-                <div class="file-info">
-                    <h4>📊 Analiz Sonuçları</h4>
-                    <p><strong>Dosya:</strong> ${data.dosya_adi}</p>
-                    <p><strong>Toplam Yorum:</strong> ${data.yorum_sayisi}</p>
-                </div>
-            `;
+        // İstatistikleri güncelle
+        function updateStatsDisplay(data) {
+            if (data.data) {
+                // API'den gelen istatistik verisi
+                const stats = data.data;
+                statsData = {
+                    total: stats.total,
+                    positive: stats.positive,
+                    negative: stats.negative,
+                    neutral: stats.neutral,
+                    invalid: stats.invalid
+                };
+                
+                // Sayıları güncelle
+                document.getElementById('totalComments').textContent = stats.total;
+                document.getElementById('positiveCount').textContent = stats.positive;
+                document.getElementById('negativeCount').textContent = stats.negative;
+                document.getElementById('neutralCount').textContent = stats.neutral;
 
-            // İstatistikler
-            const stats = {
-                'Olumlu': data.sonuclar.filter(r => r.analiz === 'Olumlu').length,
-                'Olumsuz': data.sonuclar.filter(r => r.analiz === 'Olumsuz').length,
-                'Nötr': data.sonuclar.filter(r => r.analiz === 'Nötr').length
-            };
+                // Yüzdeleri hesapla ve barları güncelle
+                const total = stats.total;
+                const positivePercent = total > 0 ? (stats.positive / total) * 100 : 0;
+                const negativePercent = total > 0 ? (stats.negative / total) * 100 : 0;
+                const neutralPercent = total > 0 ? (stats.neutral / total) * 100 : 0;
 
-            html += '<div class="stats">';
-            Object.entries(stats).forEach(([key, value]) => {
-                html += `
-                    <div class="stat-card">
-                        <div class="stat-number">${value}</div>
-                        <div class="stat-label">${key}</div>
-                    </div>
-                `;
-            });
-            html += '</div>';
+                document.getElementById('positiveBar').style.width = positivePercent + '%';
+                document.getElementById('negativeBar').style.width = negativePercent + '%';
+                document.getElementById('neutralBar').style.width = neutralPercent + '%';
 
-            // Sonuçlar
-            html += '<h4 style="margin: 20px 0;">📋 Detaylı Sonuçlar</h4>';
-            data.sonuclar.forEach(result => {
-                const sentimentClass = getSentimentClass(result.analiz);
-                html += `
-                    <div class="result-item ${sentimentClass}">
-                        <div class="comment-text">"${result.yorum}"</div>
-                        <div class="analysis-info">
-                            <span class="sentiment">${result.analiz}</span>
-                            <span class="confidence">Güven: ${(result.güven * 100).toFixed(1)}%</span>
-                        </div>
-                    </div>
-                `;
-            });
-
-            container.innerHTML = html;
+                document.getElementById('positivePercentage').textContent = positivePercent.toFixed(1) + '%';
+                document.getElementById('negativePercentage').textContent = negativePercent.toFixed(1) + '%';
+                document.getElementById('neutralPercentage').textContent = neutralPercent.toFixed(1) + '%';
+            }
         }
 
+        // Tek yorum analizi
         async function analyzeSingle() {
-            const comment = document.getElementById('singleComment').value.trim();
-            
+            const comment = document.getElementById('commentText').value.trim();
             if (!comment) {
-                showError('singleResult', 'Lütfen bir yorum yazın.');
+                alert('Lütfen bir yorum yazın!');
                 return;
             }
 
-            showLoading('singleBtn', 'singleLoading');
+            showLoading('singleLoading', true);
+            clearResults('singleResults');
 
             try {
-                const response = await fetch(`${API_BASE}/analyze`, {
+                const response = await fetch('/analyze', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -438,69 +535,169 @@
                     body: JSON.stringify({ text: comment })
                 });
 
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                if (response.ok) {
+                    const result = await response.json();
+                    displayResult(result, 'singleResults');
+                    
+                    // İstatistikleri güncelle
+                    statsData.total++;
+                    if (result.analiz === 'Olumlu') statsData.positive++;
+                    else if (result.analiz === 'Olumsuz') statsData.negative++;
+                    else if (result.analiz === 'Nötr') statsData.neutral++;
+                    else statsData.invalid++;
+                    
+                    updateStatsDisplay({ sonuclar: [result] });
+                } else {
+                    throw new Error(`HTTP ${response.status}`);
                 }
-
-                const result = await response.json();
-                renderSingleResult(result);
             } catch (error) {
-                showError('singleResult', `Analiz hatası: ${error.message}`);
+                displayError('singleResults', `Analiz hatası: ${error.message}`);
             } finally {
-                hideLoading('singleBtn', 'singleLoading');
+                showLoading('singleLoading', false);
             }
         }
 
+        // Dosya analizi
         async function analyzeFile() {
-            const fileInput = document.getElementById('fileUpload');
+            const fileInput = document.getElementById('fileInput');
             const file = fileInput.files[0];
-
+            
             if (!file) {
-                showError('fileResult', 'Lütfen bir dosya seçin.');
+                alert('Lütfen bir dosya seçin!');
                 return;
             }
 
-            if (file.size > 5 * 1024 * 1024) {
-                showError('fileResult', 'Dosya boyutu 5MB\'dan büyük olamaz.');
-                return;
-            }
+            showLoading('fileLoading', true);
+            clearResults('fileResults');
 
-            showLoading('fileBtn', 'fileLoading');
+            const formData = new FormData();
+            formData.append('file', file);
 
             try {
-                const formData = new FormData();
-                formData.append('file', file);
-
-                const response = await fetch(`${API_BASE}/upload`, {
+                const response = await fetch('/upload', {
                     method: 'POST',
                     body: formData
                 });
 
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.detail || `HTTP ${response.status}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    displayFileResults(data, 'fileResults');
+                    
+                    // İstatistikleri güncelle
+                    updateStatsDisplay(data);
+                } else {
+                    throw new Error(`HTTP ${response.status}`);
                 }
-
-                const result = await response.json();
-                renderFileResults(result);
             } catch (error) {
-                showError('fileResult', `Dosya analiz hatası: ${error.message}`);
+                displayError('fileResults', `Dosya analiz hatası: ${error.message}`);
             } finally {
-                hideLoading('fileBtn', 'fileLoading');
+                showLoading('fileLoading', false);
             }
         }
 
-        // Enter tuşu ile tek yorum analizi
-        document.getElementById('singleComment').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter' && e.ctrlKey) {
-                analyzeSingle();
-            }
-        });
+        // Gerçek zamanlı analiz kurulumu
+        function setupRealtimeAnalysis() {
+            const textarea = document.getElementById('realtimeComment');
+            let timeout;
+            
+            textarea.addEventListener('input', function() {
+                clearTimeout(timeout);
+                const text = this.value.trim();
+                
+                if (text.length > 10) {
+                    timeout = setTimeout(() => {
+                        analyzeRealtime(text);
+                    }, 1000); // 1 saniye bekle
+                } else {
+                    clearResults('realtimeResults');
+                }
+            });
+        }
 
-        // Sayfa yüklendiğinde örnek yorum
-        window.addEventListener('load', function() {
-            document.getElementById('singleComment').value = 'Bu ürün gerçekten harika! Çok memnun kaldım.';
-        });
+        // Gerçek zamanlı analiz
+        async function analyzeRealtime(text) {
+            try {
+                const response = await fetch('/analyze', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ text: text })
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    displayResult(result, 'realtimeResults');
+                }
+            } catch (error) {
+                console.error('Gerçek zamanlı analiz hatası:', error);
+            }
+        }
+
+        // Sonuç gösterimi
+        function displayResult(result, containerId) {
+            const container = document.getElementById(containerId);
+            const resultDiv = document.createElement('div');
+            
+            let sentimentClass = 'neutral';
+            if (result.analiz === 'Olumlu') sentimentClass = 'positive';
+            else if (result.analiz === 'Olumsuz') sentimentClass = 'negative';
+            else if (result.analiz === 'Geçersiz / Yetersiz Yorum') sentimentClass = 'invalid';
+
+            resultDiv.className = `result-item ${sentimentClass}`;
+            resultDiv.innerHTML = `
+                <div class="result-text">"${result.yorum}"</div>
+                <div class="result-analysis">Analiz: ${result.analiz}</div>
+                <div class="result-confidence">Güven: ${(result.güven * 100).toFixed(1)}%</div>
+                <div class="result-method">Yöntem: ${result.yöntem || 'bilinmiyor'}</div>
+            `;
+
+            container.appendChild(resultDiv);
+        }
+
+        // Dosya sonuçları gösterimi
+        function displayFileResults(data, containerId) {
+            const container = document.getElementById(containerId);
+            
+            if (data.sonuclar && data.sonuclar.length > 0) {
+                const summaryDiv = document.createElement('div');
+                summaryDiv.className = 'success';
+                summaryDiv.innerHTML = `
+                    <strong>✅ Analiz Tamamlandı!</strong><br>
+                    Dosya: ${data.dosya_adi}<br>
+                    Toplam Yorum: ${data.yorum_sayisi}<br>
+                    İşlem Süresi: ${data.islem_suresi || 'bilinmiyor'} saniye
+                `;
+                container.appendChild(summaryDiv);
+
+                data.sonuclar.forEach(result => {
+                    displayResult(result, containerId);
+                });
+            } else {
+                displayError(containerId, 'Dosyadan sonuç alınamadı');
+            }
+        }
+
+        // Hata gösterimi
+        function displayError(containerId, message) {
+            const container = document.getElementById(containerId);
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error';
+            errorDiv.textContent = message;
+            container.appendChild(errorDiv);
+        }
+
+        // Loading gösterimi
+        function showLoading(loadingId, show) {
+            const loading = document.getElementById(loadingId);
+            loading.style.display = show ? 'block' : 'none';
+        }
+
+        // Sonuçları temizle
+        function clearResults(containerId) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+        }
     </script>
 </body>
 </html>

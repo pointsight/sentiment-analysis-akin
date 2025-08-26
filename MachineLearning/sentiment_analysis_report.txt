@@ -1,0 +1,63 @@
+🎭 TÜRKÇE DUYGU ANALİZİ SİSTEMİ - İSTATİSTİK RAPORU
+============================================================
+
+🏥 SİSTEM DURUMU
+--------------------
+✅ Durum: healthy
+✅ Yüklenen Modeller: 2
+   - savasy: savasy/bert-base-turkish-sentiment-cased
+   - dbmdz: dbmdz/bert-base-turkish-cased
+
+📁 TEST DOSYALARI ANALİZİ
+------------------------------
+📄 ornek_yorumlar.txt
+   Toplam Yorum: 57
+   Sentiment Dağılımı:
+     Olumlu: 15 (26.3%)
+     Olumsuz: 16 (28.1%)
+     Nötr: 26 (45.6%)
+   Yöntem Dağılımı:
+     multi_model: 31 (54.4%)
+     kural_tabanlı: 26 (45.6%)
+   Güven Skorları:
+     Ortalama: 0.948
+     Min-Max: 0.565 - 1.000
+     Standart Sapma: 0.081
+   Model Tutarlılığı:
+     Genel Tutarlılık: 58.1%
+     savasy: 60.0% tutarlı
+     dbmdz: 0.0% tutarlı
+
+📄 test_yorumlar_detayli.txt
+   Toplam Yorum: 42
+   Sentiment Dağılımı:
+     Olumlu: 11 (26.2%)
+     Olumsuz: 18 (42.9%)
+     Nötr: 12 (28.6%)
+     Geçersiz / Yetersiz Yorum: 1 (2.4%)
+   Yöntem Dağılımı:
+     multi_model: 29 (69.0%)
+     kural_tabanlı: 13 (31.0%)
+   Güven Skorları:
+     Ortalama: 0.897
+     Min-Max: 0.567 - 1.000
+     Standart Sapma: 0.125
+   Model Tutarlılığı:
+     Genel Tutarlılık: 34.5%
+     savasy: 36.0% tutarlı
+     dbmdz: 25.0% tutarlı
+
+📈 GENEL ÖZET
+--------------------
+📊 Toplam Analiz Edilen Yorum: 99
+🎯 Genel Sentiment Dağılımı:
+   Nötr: 38 (38.4%)
+   Olumsuz: 34 (34.3%)
+   Olumlu: 26 (26.3%)
+   Geçersiz / Yetersiz Yorum: 1 (1.0%)
+🔧 Genel Yöntem Dağılımı:
+   multi_model: 60 (60.6%)
+   kural_tabanlı: 39 (39.4%)
+
+✨ Rapor tamamlandı!
+============================================================
